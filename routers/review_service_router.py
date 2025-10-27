@@ -39,6 +39,6 @@ async def review_book_router (
         )
     return JSONResponse(
         status_code = status.HTTP_201_CREATED,
-        content={"detail":"book registered successfully."}
+        content={"detail":"review registered successfully."}
     )
     

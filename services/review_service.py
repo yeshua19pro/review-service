@@ -1,5 +1,5 @@
 """
-Catalog Service for handling Review-related operations such as Ratting and Comments.
+Review Service for handling Review-related operations such as Ratting and Comments.
 """
 from fastapi import HTTPException, status
 from fastapi.responses import JSONResponse
@@ -35,6 +35,7 @@ def create_access_token(data: dict, expires_minutes: int = 60) -> str: # JWT cre
 
 
 async def validate_book_exists(book_id: str):
+    response = ""
     params = {
         "x_internal_action_token": settings.INTERNAL_ACTION_TOKEN
     }
@@ -43,6 +44,8 @@ async def validate_book_exists(book_id: str):
             f"{settings.CATALOG_SERVICE_URL}/catalog/book-exists/{book_id}",
             params=params
         )
+
+    print(response)
     return response.status_code == 200
 
 
@@ -66,6 +69,6 @@ async def review_book(db: AsyncSession, review_data: ReviewData, book_id : UUID,
     )
     
     db.add(new_review)
-    db.commit()
+    await db.commit()
     await db.refresh(new_review)
     return new_review
