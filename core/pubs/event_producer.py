@@ -3,12 +3,12 @@ import json
 from core.rabbit import connect_to_rabbit
 
 QUEUE_NAME = "reviews"
-EXCHANGE_NAME = "review_events"
+EXCHANGE_NAME = "review_events" #prioritary
 
-async def publish_log_event(event: dict):
+async def publish_review_event(event: dict):
     channel = await connect_to_rabbit()
 
-    exchange = await channel.declare_exchange(EXCHANGE_NAME, aio_pika.ExchangeType.TOPIC, durable=True)
+    exchange = await channel.declare_exchange(EXCHANGE_NAME, aio_pika.ExchangeType.TOPIC, durable=True) # Everyone can react to TOPIC
 
     routing_key = event.get("event_type", "reviews.unknown")
 

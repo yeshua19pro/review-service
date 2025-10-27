@@ -8,6 +8,8 @@ from db.session import get_session # Get async session for bd
 from core.limiter import limiter
 from sqlalchemy.future import select # Select for queries
 from uuid import UUID , uuid4 # UUID for tables ids
+from core.pubs.event_producer import publish_review_event #rabbit mq queue publisher
+from core.events.review_event import build_review_event
 from datetime import datetime, timedelta, timezone # Time management
 import random 
 from utils.time import utc_now, utc_return_time_cast # Router functions for lesser verbouse text
@@ -37,6 +39,11 @@ async def review_book_router (
             status_code = status.HTTP_404_NOT_FOUND,
             content={"detail":"book with this id not exists."}
         )
+        
+    review_event = build_review_event(registry_data.rating, book_id)
+    await publish_review_event(review_event)
+    
+    
     return JSONResponse(
         status_code = status.HTTP_201_CREATED,
         content={"detail":"review registered successfully."}
