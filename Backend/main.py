@@ -41,7 +41,7 @@ async def root(request: Request):
     return JSONResponse(
         status_code=200,
         content={
-            "message": "Auth Service online.",
+            "message": "Review Service online.",
             "status": "ok",
             "version": "1.0.0",
             "client_ip": request.client.host
